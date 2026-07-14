@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SAINTANNYA THE GHOST - Dashboard</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; text-align: center; background: #0b0f19; color: #ffffff; padding: 50px; }
+        #container { background: #161d30; padding: 30px; display: inline-block; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 1px solid #ff3e3e; }
+        #qrcode img { margin: 20px auto; border: 2px solid #ff3e3e; background: white; padding: 10px; border-radius: 8px; }
+        .status { font-weight: bold; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; }
+        .connected { color: #00ff66; text-shadow: 0 0 10px #00ff66; }
+        h1 { color: #ff3e3e; text-shadow: 0 0 15px rgba(255, 62, 62, 0.4); margin-bottom: 5px; }
+        .subtitle { font-size: 12px; color: #718096; margin-bottom: 25px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>SAINTANNYA THE GHOST</h1>
+        <div class="subtitle">WhatsApp MD Core System</div>
+        <p class="status">System Status: <span id="status">Initializing...</span></p>
+        <div id="qrcode"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const statusEl = document.getElementById('status');
+        const qrEl = document.getElementById('qrcode');
+
+        socket.on('status', (status) => {
+            statusEl.innerText = status;
+            if (status === 'Connected') {
+                statusEl.className = 'connected';
+                qrEl.innerHTML = '<h3>👻 THE GHOST IS LIVE!</h3>';
+            }
+        });
+
+        socket.on('qr', (qrImageBase64) => {
+            statusEl.innerText = 'Awaiting Sync (Scan QR)';
+            qrEl.innerHTML = `<img src="${qrImageBase64}" alt="Scan to Summon">`;
+        });
+    </script>
+</body>
+</html>
